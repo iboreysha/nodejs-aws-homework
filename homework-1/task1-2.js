@@ -13,40 +13,12 @@
 
 
 // -------------------------------------------
-// Test 2
-
-// const fs = require('fs');
-// const CSVToJSON = require('csvtojson');
-
-// // convert csv file to JSON array
-// CSVToJSON().fromFile('csv/nodejs-hw1-ex1.csv')
-//   .then(books => {
-//     // users is a JSON array
-//     console.log(books);
-
-//   }).catch(err => {
-//     // log error if any
-//     console.log(err);
-//   });
-
-// // Write JSON array to a file
-// fs.writeFile("json/nodejs-hw1-ex2-test2.json", JSON.stringify(books, null, 2), (err) => {
-//   if (err) {
-//     throw err;
-//   }
-//   console.log("JSON array is saved.");
-// });
-
-// END: Test 2
-// -------------------------------------------
-
-
-
-// -------------------------------------------
 // Test 3
 
-const fs = require('fs');
-const csvtojson =require('csvtojson');
+// const fs = require('fs');
+import fs from 'fs';
+// const csvtojson =require('csvtojson');
+import csvtojson from 'csvtojson';
 
 const csvfilepath = "csv/nodejs-hw1-ex1.csv"
 
