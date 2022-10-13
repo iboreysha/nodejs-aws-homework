@@ -1,0 +1,19 @@
+{
+  "name": "homework-1",
+  "version": "1.0.0",
+  "description": "",
+  "//": "type: module -- test comment line",
+  "type": "module",
+  "scripts": {
+    "task1": "nodemon task1-1.js",
+    "task2": "node task1-2.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "csvtojson": "^2.0.10"
+  }
+}
