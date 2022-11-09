@@ -23,21 +23,21 @@ const users = [
     "login": "user1",
     "password": "pass1",
     "age": 10,
-    "isDeleted": "false"
+    "isDeleted": false
   },
   {
     "id": "645b1056-d72c-4eda-bc48-fb4f8365136d",
     "login": "user2",
     "password": "pass2",
     "age": 20,
-    "isDeleted": "false"
+    "isDeleted": false
   },
   {
     "id": "cb8ed75b-05e9-4f1b-9b82-c4eebeb8620d",
     "login": "user3",
     "password": "pass3",
     "age": 30,
-    "isDeleted": "false"
+    "isDeleted": false
   }
 ]
 
@@ -58,13 +58,11 @@ app.get('/', (req, res) => {
 app.get('/api/users', (req, res) => {
 
   // Filtered non deleted users
-  const usersList = users.filter((user) => user.isDeleted === "false");
-  res.send(usersList);
+  const usersList = users.filter((user) => user.isDeleted === false);
 
-  // For testing - See all users: active and deleted 
-  console.log("----------------------");
-  console.log(users);
-  console.log("----------------------");
+  // Do not show deleted users
+  const activeUsersList = removeDeletedUsers(usersList);
+  res.send(activeUsersList);
 
 });
 
@@ -75,9 +73,12 @@ app.get('/api/users', (req, res) => {
 app.get('/api/users/:id', (req, res) => {
 
   // Filtered non deleted users
-  const usersList = users.filter((user) => user.isDeleted === "false");
+  const usersList = users.filter((user) => user.isDeleted === false);
 
-  const user = usersList.find((user) => user.id === req.params.id);
+  // Do not show deleted users
+  const activeUsersList = removeDeletedUsers(usersList);
+
+  const user = activeUsersList.find((user) => user.id === req.params.id);
 
   if (!user) {
     res.status(404).send('The user with the given ID was not found');
@@ -105,12 +106,10 @@ app.post('/api/users', (req, res) => {
     login: req.body.login,
     password: req.body.password,
     age: req.body.age,
-    //isDeleted: req.body.isDeleted
-    isDeleted: "false"
+    isDeleted: false
   }
 
   users.push(user);
-
   res.send(user);
 
 });
@@ -122,7 +121,7 @@ app.post('/api/users', (req, res) => {
 app.put('/api/users/:id', (req, res) => {
 
   // Filtered non deleted users
-  const usersList = users.filter((user) => user.isDeleted === "false");
+  const usersList = users.filter((user) => user.isDeleted === false);
 
   const user = usersList.find((user) => user.id === req.params.id);
 
@@ -140,8 +139,11 @@ app.put('/api/users/:id', (req, res) => {
   user.login = req.body.login,
   user.password = req.body.password,
   user.age = req.body.age
+  user.isDeleted = req.body.isDeleted
 
-  res.send(user);
+   // Do not show deleted users
+  const activeUsersList = removeDeletedUsers(usersList);
+  res.send(activeUsersList);
 
 });
 
@@ -152,7 +154,7 @@ app.put('/api/users/:id', (req, res) => {
 app.delete('/api/users/:id', (req, res) => {
 
   // Filtered non deleted users
-  const usersList = users.filter((user) => user.isDeleted === "false");
+  const usersList = users.filter((user) => user.isDeleted === false);
 
   const user = usersList.find((user) => user.id === req.params.id);
 
@@ -163,9 +165,16 @@ app.delete('/api/users/:id', (req, res) => {
 
   user.isDeleted = req.body.isDeleted;
 
-  res.send(`User is deleted ID: ${user.id}`);
+  res.send(`User deleted ID: ${user.id}`);
 
 });
+
+
+//
+// Run local server
+//
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Server has started on localhost:${PORT}`));
 
 
 //
@@ -175,16 +184,17 @@ function validateUser(user) {
   const schema = Joi.object({
     login: Joi.string().min(3).max(20).required(),
     password: Joi.string().min(3).max(20).alphanum().required(),
-    age: Joi.number().integer().min(4).max(130).required()
-    //isDeleted: Joi.boolean().required()
+    age: Joi.number().integer().min(4).max(130).required(),
+    isDeleted: Joi.boolean().required()
   });
   return schema.validate(user);
 }
 
 
 //
-// Run local server
+// Do not show deleted users
 //
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Server has started on localhost:${PORT}`));
-
+function removeDeletedUsers(users) {
+  const activeUsers = users.map(({isDeleted, ...rest}) => ({...rest}))
+  return activeUsers;
+}
