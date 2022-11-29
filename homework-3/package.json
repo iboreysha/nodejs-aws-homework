@@ -2,8 +2,9 @@
   "name": "homework-2",
   "version": "1.0.0",
   "description": "",
-  "//": "type: module -- test comment line",
+  "//": "type: module --- test comment line use for -import- instead of -require- or vice versa",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "task3": "nodemon app.js"
   },
   "author": "",
